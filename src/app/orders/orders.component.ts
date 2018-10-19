@@ -21,6 +21,7 @@ export class OrdersComponent implements OnInit {
 
   orders: Array<IOrder> = [];
   errorMessage: string;
+  confirmMessage: string;
   name: string;
 
   constructor(
@@ -66,14 +67,32 @@ export class OrdersComponent implements OnInit {
     }, 0);
     const taxAmount = total *.15;
     const subTotal = total-taxAmount;
-    this.validate(this.name, total, taxAmount, subTotal)
+    this.validate(this.name, total, taxAmount, subTotal, )
   }
 
   validate(name:string, total: number, taxAmount: number, subTotal: number){
+
     if(!total){
-      this.errorMessage = 'Must Execute'
+      this.errorMessage = 'Must Enter numbers for all prices and quantities'
       this.showMessage('error-modal');
     }
+    else if(!name){
+        this.errorMessage = 'Must enter a name';
+        this.showMessage('error-modal');
+    }
+
+    else if(name.search(', ') == -1){
+        this.errorMessage = 'Must use a comma and space to seperate last and first name';
+        this.showMessage('error-modal');
+      }
+    
+    else {
+      let firstName = name.slice(name.indexOf(', ')+2,name.length);
+      let lastName = name.slice(0,name.indexOf(','));
+      this.confirmMessage = `Thank you for your order ${firstName} ${lastName}  your subtotal is ${subTotal} your tax is ${taxAmount} and your total is ${total}`
+      this.showMessage('confirm-modal');
+    }
+
   }
 
   showMessage(modalID: string) {
